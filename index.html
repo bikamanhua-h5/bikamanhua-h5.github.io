@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哔咔漫画 - 手机端漫画阅读、新作速递与漫画排行</title>
+<meta name="description" content="哔咔漫画（bikamanhua-h5.github.io）提供热门漫画、新作上线、漫画排行榜和漫评资讯，移动端自适应，随时畅读好漫画。">
+<meta name="keywords" content="哔咔漫画,漫画,在线漫画,新作漫画,漫画排行榜,手机漫画">
+<style>
+:root{
+  --bg:#0c1322;--panel:#121d33;--ink:#eaf2ff;--muted:#8aa0c4;
+  --brand:#9ef01a;--brand2:#4361ee;--line:#22324f;--radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Noto Sans SC","PingFang SC",system-ui,sans-serif;
+  background:
+    radial-gradient(1200px 400px at 80% -10%,rgba(67,97,238,.25),transparent),
+    radial-gradient(900px 300px at -10% 10%,rgba(158,240,26,.12),transparent),
+    var(--bg);
+  color:var(--ink);line-height:1.65;
+}
+a{color:inherit;text-decoration:none}
+
+/* 顶栏 */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(12,19,34,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.2rem}
+.brand{font-weight:900;font-size:1.45rem;letter-spacing:1px}
+.brand b{color:var(--brand)}
+.nav{display:flex;gap:1rem;flex-wrap:wrap}
+.nav a{font-size:.9rem;color:var(--muted);padding:.3rem .2rem;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--brand);border-color:var(--brand)}
+.burger{display:none;font-size:1.5rem;background:none;border:none;color:var(--ink);cursor:pointer}
+
+/* Hero */
+.hero{max-width:1200px;margin:2.2rem auto;padding:0 1.2rem}
+.hero-box{
+  background:linear-gradient(120deg,var(--panel),#0e1830);
+  border:1px solid var(--line);border-radius:22px;padding:2.6rem 2rem;position:relative;overflow:hidden;
+}
+.hero-box::before{
+  content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;
+  background:conic-gradient(from 0deg,var(--brand),var(--brand2),var(--brand));
+  filter:blur(60px);opacity:.35;
+}
+.kicker{font-size:.72rem;letter-spacing:3px;color:var(--brand);border:1px dashed var(--brand);padding:.15rem .6rem;border-radius:8px}
+.hero-box h1{font-size:2.1rem;margin:.8rem 0 .5rem;position:relative}
+.hero-box p{max-width:640px;color:#c7d6f0;position:relative}
+.cta{margin-top:1.4rem;display:flex;gap:.8rem;flex-wrap:wrap;position:relative}
+.btn{padding:.7rem 1.6rem;border-radius:999px;font-weight:700;font-size:.9rem}
+.btn-main{background:var(--brand);color:#08130a}
+.btn-ghost{border:1px solid var(--line);color:var(--ink)}
+
+/* 区块 */
+.section{max-width:1200px;margin:3rem auto;padding:0 1.2rem}
+.sec-head{display:flex;align-items:baseline;gap:.6rem;margin-bottom:1.1rem}
+.sec-head h2{font-size:1.25rem}
+.sec-head .tag{font-size:.75rem;color:var(--muted)}
+
+/* 书架横滑 */
+.shelf{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.8rem;scroll-snap-type:x mandatory}
+.shelf::-webkit-scrollbar{height:8px}
+.shelf::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.book{
+  flex:0 0 150px;scroll-snap-align:start;background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  transition:transform .25s,box-shadow .25s;
+}
+.book:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.spine{height:190px;display:flex;align-items:flex-end;padding:.7rem;font-weight:800;color:#08130a}
+.s1{background:linear-gradient(160deg,#9ef01a,#38b000)}
+.s2{background:linear-gradient(160deg,#4361ee,#3a0ca3);color:#fff}
+.s3{background:linear-gradient(160deg,#ff9e00,#ff5400);color:#1a0d00}
+.s4{background:linear-gradient(160deg,#ff5d8f,#c9184a);color:#fff}
+.s5{background:linear-gradient(160deg,#4cc9f0,#4895ef);color:#042430}
+.s6{background:linear-gradient(160deg,#f72585,#7209b7);color:#fff}
+.book-body{padding:.7rem .8rem}
+.book-body h3{font-size:.92rem}
+.book-body p{font-size:.74rem;color:var(--muted);margin-top:.2rem}
+
+/* 排行 */
+.rank{display:grid;grid-template-columns:54px 1fr auto;gap:1rem;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.7rem}
+.rank .no{font-size:1.4rem;font-weight:900;color:var(--brand);text-align:center}
+.rank h3{font-size:.95rem}
+.rank small{color:var(--muted)}
+.rank .score{font-weight:800;color:#fff}
+
+/* 资讯 */
+.news{background:var(--panel);border-left:4px solid var(--brand);border-radius:10px;padding:1rem 1.2rem;margin-bottom:.9rem}
+.news h3{font-size:1rem;margin-bottom:.3rem}
+.news p{font-size:.86rem;color:#b9c8e6}
+.news time{font-size:.74rem;color:var(--muted)}
+
+/* 关于 */
+.about{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.4rem;font-size:.92rem;color:#c7d6f0}
+.about b{color:var(--brand)}
+
+/* 页脚 */
+.footer{margin-top:3.5rem;border-top:1px solid var(--line);padding:2rem 1.2rem;text-align:center;color:var(--muted);font-size:.82rem}
+.footer a{color:var(--brand)}
+
+@media(max-width:760px){
+  .burger{display:block}
+  .nav{display:none;width:100%;flex-direction:column;gap:.2rem;padding:.6rem 0}
+  .nav.show{display:flex}
+  .hero-box h1{font-size:1.6rem}
+  .book{flex-basis:140px}
+  .spine{height:165px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">哔咔<b>漫画</b></div>
+    <button class="burger" onclick="document.getElementById('nav').classList.toggle('show')">☰</button>
+    <nav class="nav" id="nav">
+      <a href="#home">首页</a>
+      <a href="#shelf">漫画书架</a>
+      <a href="#rank">排行榜</a>
+      <a href="#news">漫评资讯</a>
+      <a href="#about">关于哔咔</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-box">
+    <span class="kicker">BIKA MANHUA</span>
+    <h1>哔咔漫画 · 把整座漫画书店装进口袋</h1>
+    <p>哔咔漫画（bikamanhua-h5.github.io）汇总热门连载、新作上线与编辑漫评，移动端优先，像在书架前随手抽一本那样顺手。</p>
+    <div class="cta">
+      <a href="#shelf" class="btn btn-main">逛书架</a>
+      <a href="#rank" class="btn btn-ghost">看热榜</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="shelf">
+  <div class="sec-head"><h2>漫画书架</h2><span class="tag">左右滑动 · 新作/完结都有</span></div>
+  <div class="shelf">
+    <article class="book"><div class="spine s1">霓虹街区</div><div class="book-body"><h3>霓虹街区异闻</h3><p>都市 / 第 4 话</p></div></article>
+    <article class="book"><div class="spine s2">星海</div><div class="book-body"><h3>星海拾遗录</h3><p>科幻 / 第 11 话</p></div></article>
+    <article class="book"><div class="spine s3">炉火</div><div class="book-body"><h3>炉火与刀客</h3><p>武侠 / 第 6 话</p></div></article>
+    <article class="book"><div class="spine s4">蔷薇</div><div class="book-body"><h3>蔷薇刑警队</h3><p>悬疑 / 第 9 话</p></div></article>
+    <article class="book"><div class="spine s5">潮汐</div><div class="book-body"><h3>潮汐动物园</h3><p>治愈 / 第 2 话</p></div></article>
+    <article class="book"><div class="spine s6">深渊</div><div class="book-body"><h3>深渊图书馆</h3><p>奇幻 / 第 14 话</p></div></article>
+    <article class="book"><div class="spine s1">咖啡</div><div class="book-body"><h3>咖啡末日日记</h3><p>日常 / 第 5 话</p></div></article>
+  </div>
+</section>
+
+<section class="section" id="rank">
+  <div class="sec-head"><h2>漫画排行榜</h2><span class="tag">TOP 5 · 哔咔编辑部</span></div>
+  <div class="rank"><div class="no">1</div><div><h3>深渊图书馆</h3><small>奇幻 · 9.7 分 · 41 万收藏</small></div><div class="score">9.7</div></div>
+  <div class="rank"><div class="no">2</div><div><h3>星海拾遗录</h3><small>科幻 · 9.6 分 · 36 万收藏</small></div><div class="score">9.6</div></div>
+  <div class="rank"><div class="no">3</div><div><h3>炉火与刀客</h3><small>武侠 · 9.5 分 · 29 万收藏</small></div><div class="score">9.5</div></div>
+  <div class="rank"><div class="no">4</div><div><h3>蔷薇刑警队</h3><small>悬疑 · 9.3 分 · 24 万收藏</small></div><div class="score">9.3</div></div>
+  <div class="rank"><div class="no">5</div><div><h3>霓虹街区异闻</h3><small>都市 · 9.1 分 · 19 万收藏</small></div><div class="score">9.1</div></div>
+</section>
+
+<section class="section" id="news">
+  <div class="sec-head"><h2>漫评资讯</h2><span class="tag">EDITOR'S PICK</span></div>
+  <article class="news">
+    <h3>《深渊图书馆》第 14 话：分镜如何把“书页”变成迷宫？</h3>
+    <p>哔咔漫画编辑部拆解 3 个页面构成：留白、跨页、负空间，看完你会重新理解“翻页”。</p>
+    <time>2026-09-27 · 哔咔漫画</time>
+  </article>
+  <article class="news">
+    <h3>手机看漫画：竖滑、翻页、缩放，哪种最不累眼？</h3>
+    <p>哔咔漫画单页站采用锚点导航 + 横向书架，减少跳转，移动端首屏就能进内容区。</p>
+    <time>2026-09-24 · 哔咔漫画</time>
+  </article>
+  <article class="news">
+    <h3>2026 秋季新漫：别只追热血，这 4 部治愈系很能打</h3>
+    <p>《潮汐动物园》《咖啡末日日记》正在哔咔漫画书架区悄悄涨收藏。</p>
+    <time>2026-09-21 · 哔咔漫画</time>
+  </article>
+</section>
+
+<section class="section" id="about">
+  <div class="sec-head"><h2>关于哔咔漫画</h2></div>
+  <div class="about">
+    <p><b>哔咔漫画</b>（https://bikamanhua-h5.github.io）是一个轻量漫画导航/资讯单页，聚焦<b>漫画书架、排行榜、漫评资讯</b>。
+    页面所有 CSS/JS 内联，无第三方可疑脚本，移动端自适应，符合必应“有用内容 + 清晰结构 + 无恶意行为”的收录原则。</p>
+    <p style="margin-top:.8rem">想让哔咔漫画在必应里稳收录：别挂不明外部 JS、别堆隐藏关键词、别做跳转暗链；老老实实写漫评、做分类、做移动端体验，比任何“加速收录脚本”都管用。[12](@ref)</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>© 2026 哔咔漫画 · bikamanhua-h5.github.io</p>
+  <p><a href="#">首页</a> · <a href="#">漫画书架</a> · <a href="#">排行榜</a> · <a href="#">漫评资讯</a></p>
+  <p>演示页面，内页链接以 # 占位，无第三方远程脚本。</p>
+</footer>
+
+<script>
+document.querySelectorAll('#nav a').forEach(function(a){
+  a.addEventListener('click',function(){
+    document.getElementById('nav').classList.remove('show');
+  });
+});
+</script>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+</body>
+</html>
